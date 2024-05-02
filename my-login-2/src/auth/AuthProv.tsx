@@ -28,6 +28,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
         localStorage.setItem("isAuthenticated", JSON.stringify(isAuthenticated));
     }, [isAuthenticated]);
 
+    useEffect(() => {
+        // Agregar un listener para el evento storage para manejar cambios en localStorage
+        const handleStorageChange = () => {
+            const storedAuth = localStorage.getItem("isAuthenticated");
+            const isAuthenticated = storedAuth ? JSON.parse(storedAuth) : false;
+            setIsAuthenticated(isAuthenticated);
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
+
     const handleSetIsAuthenticated = (value: boolean) => {
         setIsAuthenticated(value);
     };
